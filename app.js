@@ -78,37 +78,4 @@ tu.filter({track: ['picture'], stall_warnings:true}, function(stream){
 	});
 });
 
-// tu.user({user:'testdemo4'}, function(stream){
-//   // tweets :)
-//   stream.on('tweet', function(data){
-//     console.log(data);
-//   });
-// });
-
-// tu.mentions({trim_user: false}, function(err, data){
-// 	console.log(data);    
-// });
-
-/**
- * Starts a stream for the specified track words or location
- * @param spec a fully constructed stream specification
- * @param cb(pic) the callback
- *     pic: a newly received pic or null if the stream stopped
- */
-// var sid = tl.stream({}, function(pic) {
-//   if (typeof pic == 'undefined') {
-//     // an error occurred and the stream stopped
-//     conslo.log( "error" );
-//   } 
-//   else {
-//     // work with pic 
-//     console.log( pic );
-//   }
-// });
-
-/**
- * stops the above stream
- */
-// tl.stop(sid);
-
 
