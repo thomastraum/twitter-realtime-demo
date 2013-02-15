@@ -9,8 +9,7 @@ var express = require('express')
   , http = require('http')
   , util = require('util')
   , Tuiter = require('tuiter')
-  , keys = require('./keys.json')
-  , osc = require('omgosc');;
+  , keys = require('./keys.json');
   // , tl = require('teleportd').teleportd({ user_key: 'ad460c8ef5b09562d7fc1400513b836d' });
 
 var app = express();
@@ -43,27 +42,31 @@ process.on('uncaughtException', function(err){
   util.inspect(err);
 });
 
-
-//------------------------------------------------------------------------- OSC
-var sender = new osc.UdpSender('127.0.0.1', 12345);
-// var i = 0;
-// setInterval(function() {
-//   sender.send('/osc_data',
-// 			  'sfiTFNI',
-// 			  ['hello', Math.random(), i++, true, false, null, undefined]);
-// }, 1000/10);
-
 //------------------------------------------------------------------------- SOCKET & TUITER
+
+var io = require('socket.io').listen(server);
+
 var tu = new Tuiter(keys);
 
 // var output = fs.createWriteStream(__dirname + '/output.txt');
-// 40.747306,-74.007205
-tu.filter({location: [{lat: -90, long: -180}, {lat: 90, long: 180}]}, function(stream){
-// tu.filter({track: ['#iHateHowPeople'], stall_warnings:true}, function(stream){
+
+tu.filter({track: ['picture'], stall_warnings:true}, function(stream){
 
 	stream.on('tweet', function(data){
-		console.log(data);
-		sender.send( '/tweet', 'sfiTFNI', [data.text] );
+
+		// console.log(data.entities);
+		// console.log(data.entities.media[0].media_url);
+		if ( data.entities.media != undefined ) {
+
+			io.sockets.emit("tweet", {
+				  image: data.entities.media[0].media_url + ":thumb"
+				, screen_name: data.user.screen_name
+				, text: data.text
+				, pic: data.user.profile_image_url
+			});
+			
+		}
+
 	});
 
 	stream.on("delete", function(data){
